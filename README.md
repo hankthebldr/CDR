@@ -63,21 +63,22 @@ This script is a comprehensive simulation of malicious activity designed to test
 - **DEEPCE Usage**:
   - Downloads and runs container enumeration scripts (DEEPCE) to simulate privilege escalation (T1611).
 - **Objective**: Test detection of container-specific exploits like privileged mode abuse.
-
+- Specific cryptominer detonation that aligns with Unit42 threat research https://unit42.paloaltonetworks.com/unit42-large-scale-monero-cryptocurrency-mining-operation-using-xmrig/
 ---
 
 #### **Scenario 5: Network Scanning**
 - **Local and Remote Scans**:
   - Performs network scanning using Nmap for local and external addresses (T1046).
 - **Objective**: Simulate network discovery activities for detecting reconnaissance.
+- Domain consultants can execute into the alpine-cdr-1 container and execute different network scans, these can be specific to the pod or network topology 
 
 ---
 
 #### **Scenario 6: Execution of Malware**
 - **Backdoors, C2 Clients, and Malware Execution**:
   - Executes malicious binaries and scripts such as Conti ransomware and Unix backdoor (T1105).
-- **Error Handling**: Suppresses errors during execution for resilience against detection failures.
-
+- Will pull down Palo alto wwildfire tests outlined on https://docs.paloaltonetworks.com/advanced-wildfire/administration/configure-advanced-wildfire-analysis/verify-wildfire-submissions/test-a-sample-malware-file
+- Will create a staged malware trigger 
 ---
 
 ### **Detection and Behavioral Triggers**
