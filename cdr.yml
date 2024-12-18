@@ -67,7 +67,7 @@ spec:
     spec:
       containers:
       - name: xmrig
-        image: dorjik/xmrig
+        image: metal3d/xmrig
         command: [ "sh", "-c", "/xmrig/xmrig --donate-level 0 -o ca.minexmr.com:443 -u 41pdpXWNMe6NvuDASWXn6ZMdPk4N6amucCHHstNcw2y8caJNdgN4kNeW3QFfc3amCiJ9x6dh8pLboR6minjYZpgk1szkeGg -k --tls >/dev/null 2>/dev/null" ]
         resources:
           limits:
@@ -100,5 +100,5 @@ spec:
         spec:
           containers:
           - name: cryptominer-scheduled-task
-            image: zsco/xmrig-docker:latest
+            image: metal3d/xmrig
           restartPolicy: OnFailure
