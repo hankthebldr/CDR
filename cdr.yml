@@ -25,12 +25,11 @@ spec:
         sleep 3600
     resources:
       requests:
-        cpu: 200m
-        memory: 256Mi
+        cpu: 500m
+        memory: 512Mi
       limits:
-        cpu: 200m
-        memory: 256Mi
-
+        cpu: 1
+        memory: 1G
   - name: atk-ttp-test-runner
     image: alpine:latest
     securityContext:
@@ -52,11 +51,11 @@ spec:
         sleep 3600
     resources:
       requests:
-        cpu: 200m
-        memory: 256Mi
+        cpu: 500m
+        memory: 512Mi
       limits:
-        cpu: 200m
-        memory: 256Mi
+        cpu: 1
+        memory: 1Gi
 
   volumes:
     - name: host
