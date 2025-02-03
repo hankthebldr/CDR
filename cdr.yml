@@ -23,6 +23,14 @@ spec:
         chmod +x virus.sh && \
         sh virus.sh && \
         sleep 3600
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+
   - name: atk-ttp-test-runner
     image: alpine:latest
     securityContext:
@@ -42,10 +50,19 @@ spec:
         chmod +x atk-ttp-test.sh && \
         ./atk-ttp-test.sh && \
         sleep 3600
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+
   volumes:
     - name: host
       hostPath:
-        path: / && \
+        path: /
+
 ---
 apiVersion: apps/v1
 kind: DaemonSet
