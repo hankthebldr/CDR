@@ -1,115 +1,135 @@
-# CDR
-# XSIAM-Prisma CDR Lab
+# XSIAM-Prisma Cloud CDR Lab Environment
 
-## Overview
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) ## Overview
 
-This repository serves as a comprehensive lab environment for practicing Cloud Detection and Response (CDR) using **XSIAM** and **Prisma Cloud**. The labs are designed to simulate real-world cloud-native threats, leveraging **Kubernetes**, container orchestration platforms, and **Palo Alto Networks** technologies. These labs provide a hands-on approach to explore advanced detection techniques and response scenarios against cloud workloads, enabling users to master the application of cloud security tools and methodologies in a controlled environment.
+This repository provides a hands-on lab environment for practicing **Cloud Detection and Response (CDR)** using **Palo Alto Networks Cortex XSIAM** and **Prisma Cloud**. The labs simulate real-world, cloud-native threats within **Kubernetes** environments, focusing on container security challenges.
+By using this lab, security practitioners can gain practical experience in detecting and responding to threats like containerized cryptominers, vulnerable deployments, and behavioral anomalies (ABIOC) using advanced cloud security tools.
 
-Key scenarios include detection of containerized cryptominers, identifying vulnerable deployments, analyzing behavioral anomalies using ABIOC (Analytics Behavior Indicator of Compromise) techniques, and integrating **WildFire** threat intelligence for enhanced detection capabilities. By utilizing these labs, practitioners will gain practical experience with critical cloud security components that are essential for a robust security posture.
+**Target Audience:** Cloud Security Engineers, SOC Analysts, Security Researchers, and anyone interested in hands-on experience with XSIAM and Prisma Cloud for container security.
+## Setup & Scope 
+the CDR attack simulation is **Cloud Agnostic** demonstration of container and kubernetes security. This simulation can be deployed in any derrative of kuberentes including implementations like microk8s, k3s AKS, GKE, EKS, Openshift etc. 
 
+For 
 
-### **Summarization and Analysis of the Script for Container-Specific Detection**
+## Features
 
-This script is a comprehensive simulation of malicious activity designed to test detection and response capabilities in a containerized environment. It encompasses multiple MITRE ATT&CK tactics and techniques while leveraging the capabilities of a lightweight container like BusyBox/Alpine. Below is a breakdown of the script activities:
+* **Realistic Threat Simulation:** Executes a script simulating various attacker tactics and techniques within a container.
+* **MITRE ATT&CK Alignment:** Demonstrates techniques covering reconnaissance, initial access, execution, persistence, privilege escalation, defense evasion, credential access, discovery, lateral movement, collection, and exfiltration.
+* **Container-Specific Scenarios:** Includes tests for container enumeration, escape vulnerabilities (e.g., privileged containers), and cryptomining malware (XMRig).
+* **Palo Alto Networks Integration:** Designed to generate telemetry and alerts viewable in XSIAM and Prisma Cloud.
+* **WildFire Integration:** Includes steps to trigger and test WildFire malware analysis submissions.
+* **Network Scanning Simulation:** Simulates internal and external network discovery.
 
----
+## Prerequisites
 
-### **1. Initial Setup**
-- **System Preparation**: Updates and upgrades the Alpine package manager.
-- **Tool Installation**: Installs various tools to enable scanning, enumeration, and exploitation:
-  - Network tools: `nmap`, `tor`, `socat`
-  - Script execution environments: `bash`, `python3`, `busybox-extras`
-  - Build tools: `gcc`, `clang`, `cmake`, `openssl-dev`
+* Access to a **Cortex XSIAM** instance.
+* Access to a **Prisma Cloud Compute** instance (SaaS or self-hosted).
+* A **Kubernetes cluster** where you can deploy workloads (e.g., Minikube, Kind, GKE, EKS, AKS).
+* `kubectl` configured to interact with your cluster.
+* Prisma Cloud Defender deployed to your Kubernetes cluster and connected to Prisma Cloud Compute.
+* XSIAM configured to ingest alerts and data from your Prisma Cloud Compute instance. (See: [Ingest alerts and assets from Prisma Cloud](https://docs-cortex.paloaltonetworks.com/r/Cortex-XSIAM/Cortex-XSIAM-Documentation/Ingest-alerts-and-assets-from-Prisma-Cloud))
+* Basic understanding of Kubernetes, Docker/containers, and Linux command line.
 
----
+## Getting Started
 
-### **2. Simulated Scenarios**
-#### **Scenario 1: Enumeration and Reconnaissance**
-- **LinEnum and Linpeas Execution**: Downloads and runs enumeration scripts to collect Linux system and privilege information.
-- **Objective**: Simulate discovery and data collection activities (T1082, T1016).
+1.  **Clone the Repository:**
+    ```bash
+    git clone [https://github.com/hankthebldr/CDR.git](https://github.com/hankthebldr/CDR.git)
+    cd CDR
+    ```
+2.  **Deploy Lab Environment:**
+    * *(Instructions needed here - e.g., Apply Kubernetes manifests?)*
+    * Example: `kubectl apply -f <your-deployment-manifest.yaml>`
+3.  **Access the Simulation Container:**
+    * Identify the pod running the simulation environment (e.g., `alpine-cdr-1`).
+    * Get a shell into the container:
+        ```bash
+        kubectl exec -it <your-pod-name> -- /bin/sh # Or /bin/bash if available
+        ```
+4.  **Run the Simulation Script:**
+    * Navigate to the script location within the container (if applicable).
+    * Execute the simulation script:
+        ```bash
+        ./<your-simulation-script-name>.sh
+        ```
+    * *(Add specific script name and execution details here)*
 
----
+5.  **Observe in XSIAM/Prisma Cloud:**
+    * Monitor Prisma Cloud Compute (Incidents > Runtime Events / Monitor > Runtime > Container Observations) for policy violations and alerts.
+    * Monitor Cortex XSIAM for incoming alerts, incidents, and related telemetry from Prisma Cloud. Analyze the events using XSIAM's investigation tools.
 
-#### **Scenario 2: Malware Simulation**
-- **Unix Backdoor and Conti Malware**:
-  - Downloads, executes, and replicates backdoor binaries in suspicious directories (`/bin`, `/loader.sh`).
-  - Simulates ransomware behavior with Conti and Unix backdoors (T1486).
-- **Objective**: Test detection for malicious file downloads, privilege escalations, and persistence mechanisms.
+## Lab Scenarios & Simulation Details
 
----
+The core of this lab involves executing a script within a container (based on Alpine/BusyBox) that simulates a multi-stage attack. The script performs actions designed to trigger detections in Prisma Cloud and XSIAM.
 
-#### **Scenario 3: MITRE ATT&CK TTP Demonstrations**
-- **Initial Access and Execution**:
-  - Attempts SSH access (T1078).
-  - Creates a reverse shell using Bash and Netcat (T1059.004).
-- **Persistence**:
-  - Adds cron jobs and modifies `.profile` for backdoor access (T1053.005).
-- **Privilege Escalation**:
-  - Modifies `sudoers` and switches to root (T1548.002).
-- **Defense Evasion**:
-  - Deletes logs and restricts access to `/etc/shadow` (T1070.001, T1070.004).
-- **Credential Access**:
-  - Dumps `/etc/shadow` and extracts passwords from `.bash_history` (T1003).
-- **Discovery**:
-  - Gathers system info, network interfaces, processes, and directory listings (T1083, T1049).
-- **Lateral Movement**:
-  - Attempts SSH to a target machine (T1021.001).
-- **Data Collection and Exfiltration**:
-  - Archives and exfiltrates data using tar and Netcat (T1560, T1041).
-
----
-
-#### **Scenario 4: Container Enumeration and Exploitation**
-- **DEEPCE Usage**:
-  - Downloads and runs container enumeration scripts (DEEPCE) to simulate privilege escalation (T1611).
-- **Objective**: Test detection of container-specific exploits like privileged mode abuse.
-- Specific cryptominer detonation that aligns with Unit42 threat research https://unit42.paloaltonetworks.com/unit42-large-scale-monero-cryptocurrency-mining-operation-using-xmrig/
----
-
-#### **Scenario 5: Network Scanning**
-- **Local and Remote Scans**:
-  - Performs network scanning using Nmap for local and external addresses (T1046).
-- **Objective**: Simulate network discovery activities for detecting reconnaissance.
-- Domain consultants can execute into the alpine-cdr-1 container and execute different network scans, these can be specific to the pod or network topology 
+*(You can keep the detailed breakdown from your original README here, perhaps refining the formatting slightly)*
 
 ---
 
-#### **Scenario 6: Execution of Malware**
-- **Backdoors, C2 Clients, and Malware Execution**:
-  - Executes malicious binaries and scripts such as Conti ransomware and Unix backdoor (T1105).
-- Will pull down Palo alto wwildfire tests outlined on https://docs.paloaltonetworks.com/advanced-wildfire/administration/configure-advanced-wildfire-analysis/verify-wildfire-submissions/test-a-sample-malware-file
-- Will create a staged malware trigger 
+### **Simulation Script Breakdown:**
+
+#### **1. Initial Setup**
+* **System Preparation**: Updates Alpine packages (`apk update && apk upgrade`).
+* **Tool Installation**: Installs `nmap`, `tor`, `socat`, `bash`, `python3`, `busybox-extras`, `gcc`, `clang`, `cmake`, `openssl-dev`.
+
+#### **2. Simulated Scenarios**
+
+* **Scenario 1: Enumeration and Reconnaissance (MITRE T1082, T1016)**
+    * Downloads and runs LinEnum/Linpeas scripts.
+* **Scenario 2: Malware Simulation (MITRE T1486, T1105)**
+    * Downloads/executes simulated Unix backdoors and Conti ransomware samples.
+    * Executes Palo Alto Networks WildFire test files.
+    * Creates staged malware triggers.
+* **Scenario 3: MITRE ATT&CK TTP Demonstrations**
+    * **Initial Access/Execution:** SSH attempt (T1078), Reverse Shell (Bash/Netcat) (T1059.004).
+    * **Persistence:** Cron jobs, `.profile` modification (T1053.005).
+    * **Privilege Escalation:** `sudoers` modification (T1548.002).
+    * **Defense Evasion:** Log deletion (`/var/log`), file permission changes (T1070.001, T1070.004).
+    * **Credential Access:** Dumps `/etc/shadow`, extracts `.bash_history` (T1003).
+    * **Discovery:** System/network info gathering, process/directory listing (T1083, T1049).
+    * **Lateral Movement:** SSH attempt (T1021.001).
+    * **Collection/Exfiltration:** `tar` and `nc` usage (T1560, T1041).
+* **Scenario 4: Container Enumeration and Exploitation (MITRE T1611)**
+    * Downloads and runs DEEPCE container enumeration scripts.
+    * Detonates a specific cryptominer (XMRig variant) based on Unit42 research.
+* **Scenario 5: Network Scanning (MITRE T1046)**
+    * Performs `nmap` scans (local/remote). Allows manual execution of specific scans.
+* **Scenario 6: Execution of Malware (Continued - MITRE T1105)**
+    * Executes downloaded backdoors, C2 clients, etc.
+
+#### **3. Detection Opportunities**
+
+This simulation should trigger detections based on:
+
+* **Network Activity**: Reverse shells, C2 traffic, TOR usage, Nmap scans.
+* **File System Changes**: Malicious file downloads (e.g., `/bin`, `/loader.sh`), sensitive file modification (`/etc/sudoers`, `/etc/shadow`).
+* **Process Behavior**: Execution of recon scripts, malware binaries, privilege escalation commands, cryptomining processes.
+* **Container Runtime Anomalies**: Privilege escalation attempts, container escape tools (DEEPCE), unusual process activity within the container.
+* **Persistence**: Cron job creation, profile script modification.
+* **Exfiltration**: Use of tools like `tar` combined with `nc`.
+* **Log Tampering**: Deletion of files in `/var/log`.
+
 ---
 
-### **Detection and Behavioral Triggers**
-1. **Network Activity**:
-   - Unusual outbound connections (e.g., reverse shells, C2 traffic).
-   - Network scanning and reconnaissance.
-2. **File System Changes**:
-   - Creation of suspicious files and binaries in `/bin` or `/loader.sh`.
-   - Modifications to `/etc/sudoers` and `/etc/shadow`.
-3. **Process Behavior**:
-   - Execution of enumeration scripts and malware binaries.
-   - Privileged operations via `sudo` or capabilities.
-4. **Persistence Indicators**:
-   - Newly added cron jobs.
-   - Modifications to `.profile` for backdoor access.
-5. **Exfiltration**:
-   - Use of `tar`, `nc`, and direct outbound transfers.
+## Learning Objectives
 
----
+* Understand how XSIAM and Prisma Cloud detect threats in containerized environments.
+* Identify common attacker TTPs targeting cloud-native infrastructure.
+* Analyze runtime security events and alerts from Prisma Cloud within XSIAM.
+* Practice incident response workflows for cloud-based threats.
+* Gain familiarity with container security concepts and potential vulnerabilities.
 
-### **Opportunities for Detection in Containers**
-- **Container Escape**: Monitoring for attempts to exploit privileged containers (`DEEPCE`, privileged shell operations).
-- **File Access Patterns**: Detect unusual reads/writes to sensitive files like `/etc/shadow`.
-- **Network Anomalies**: Alert on scanning, reverse shell attempts, or unauthorized outbound connections.
-- **Malware Artifacts**: Scan for known malicious binaries or hashes.
-- **Log Tampering**: Detect deletion of log files in `/var/log`.
+## Contributing
 
----
+*(Optional: Add guidelines here if you welcome contributions. e.g., "Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.")*
 
-This script offers a robust way to simulate malicious activities and evaluate the effectiveness of your container-specific detection tools. It covers multiple attack vectors and provides opportunities to validate response mechanisms against real-world threats.
+## License
 
+*(Optional: Specify the license for your project. If you added the badge, make sure it matches.)*
+* Example: This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.*
 
-## Reference Links
-https://docs-cortex.paloaltonetworks.com/r/Cortex-XSIAM/Cortex-XSIAM-Documentation/Ingest-alerts-and-assets-from-Prisma-Cloud
+## References
+
+* [XSIAM Documentation: Ingest alerts and assets from Prisma Cloud](https://docs-cortex.paloaltonetworks.com/r/Cortex-XSIAM/Cortex-XSIAM-Documentation/Ingest-alerts-and-assets-from-Prisma-Cloud)
+* [Unit42 Research: Large-Scale Monero Cryptomining Operation](https://unit42.paloaltonetworks.com/unit42-large-scale-monero-cryptocurrency-mining-operation-using-xmrig/)
+* [Palo Alto Networks: Test a Sample Malware File for WildFire](https://docs.paloaltonetworks.com/advanced-wildfire/administration/configure-advanced-wildfire-analysis/verify-wildfire-submissions/test-a-sample-malware-file)
