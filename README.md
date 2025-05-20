@@ -65,6 +65,9 @@ the CDR attack simulation is **Cloud Agnostic** demonstration of container and k
 8.  **Observe in XSIAM/Prisma Cloud:**
     * Monitor Prisma Cloud Compute (Incidents > Runtime Events / Monitor > Runtime > Container Observations) for policy violations and alerts.
     * Monitor Cortex XSIAM for incoming alerts, incidents, and related telemetry from Prisma Cloud. Analyze the events using XSIAM's investigation tools.
+  
+9. **Observer in XDR**
+   * XDR will have created an Incident and should be avial
 
 ## Lab Scenarios & Simulation Details
 
@@ -83,7 +86,8 @@ The core of this lab involves executing a script within a container (based on Al
 #### **2. Simulated Scenarios**
 
 * **Scenario 1: Enumeration and Reconnaissance (MITRE T1082, T1016)**
-    * Downloads and runs LinEnum/Linpeas scripts.
+    * Downloads and run smart linux enumeration scritps that will investigate the different container filesystem and directories for potential vulnerabililies
+    * pulls upstream scripts that creates malicous objects, it will also preform container specific enumerations and tests
 * **Scenario 2: Malware Simulation (MITRE T1486, T1105)**
     * Downloads/executes simulated Unix backdoors and Conti ransomware samples.
     * Executes Palo Alto Networks WildFire test files.
@@ -121,7 +125,7 @@ This simulation should trigger detections based on:
 
 ## Learning Objectives
 
-* Understand how XSIAM and Prisma Cloud detect threats in containerized environments.
+* Understand how XSIAM, XDR, and Cortex Cloud
 * Identify common attacker TTPs targeting cloud-native infrastructure.
 * Analyze runtime security events and alerts from Prisma Cloud within XSIAM.
 * Practice incident response workflows for cloud-based threats.
