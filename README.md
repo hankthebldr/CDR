@@ -1,6 +1,8 @@
 # XSIAM-Prisma Cloud CDR Lab Environment
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) ## Overview
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## Overview
 
 This repository provides a hands-on lab environment for practicing **Cloud Detection and Response (CDR)** using **Palo Alto Networks Cortex XSIAM** and **Prisma Cloud**. The labs simulate real-world, cloud-native threats within **Kubernetes** environments, focusing on container security challenges.
 By using this lab, security practitioners can gain practical experience in detecting and responding to threats like containerized cryptominers, vulnerable deployments, and behavioral anomalies (ABIOC) using advanced cloud security tools.
@@ -9,7 +11,6 @@ By using this lab, security practitioners can gain practical experience in detec
 ## Setup & Scope 
 the CDR attack simulation is **Cloud Agnostic** demonstration of container and kubernetes security. This simulation can be deployed in any derrative of kuberentes including implementations like microk8s, k3s AKS, GKE, EKS, Openshift etc. 
 
-For 
 
 ## Features
 
@@ -37,24 +38,31 @@ For
     git clone [https://github.com/hankthebldr/CDR.git](https://github.com/hankthebldr/CDR.git)
     cd CDR
     ```
-2.  **Deploy Lab Environment:**
+    Optional (wget)
+    ``` bash
+    wget https://raw.githubusercontent.com/hankthebldr/CDR/refs/heads/master/cdr.yml
+    ```
+3.  **Deploy Lab Environment:**
     * *(Instructions needed here - e.g., Apply Kubernetes manifests?)*
     * Example: `kubectl apply -f <your-deployment-manifest.yaml>`
-3.  **Access the Simulation Container:**
+
+    ** Simulation will begin automatically however, you may want to start/stop or preform operations on the objects within the detectino container **
+      
+6.    **Access the Simulation Container Trouble Shooting or Manual Script Execution :**
     * Identify the pod running the simulation environment (e.g., `alpine-cdr-1`).
     * Get a shell into the container:
         ```bash
         kubectl exec -it <your-pod-name> -- /bin/sh # Or /bin/bash if available
         ```
-4.  **Run the Simulation Script:**
+7.  ** Manually Executing the Simulation Script:**
     * Navigate to the script location within the container (if applicable).
-    * Execute the simulation script:
+    * Execute the simulation script, the default entrypoint within the container will pull and create the virush.sh, there are additional script runners that are called by the kubernetes manifest that will created detection scenarios 
         ```bash
-        ./<your-simulation-script-name>.sh
+        ./virus.sh; ./loader.sh; 
         ```
     * *(Add specific script name and execution details here)*
 
-5.  **Observe in XSIAM/Prisma Cloud:**
+8.  **Observe in XSIAM/Prisma Cloud:**
     * Monitor Prisma Cloud Compute (Incidents > Runtime Events / Monitor > Runtime > Container Observations) for policy violations and alerts.
     * Monitor Cortex XSIAM for incoming alerts, incidents, and related telemetry from Prisma Cloud. Analyze the events using XSIAM's investigation tools.
 
