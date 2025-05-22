@@ -8,9 +8,9 @@ This repository provides a hands-on lab environment for practicing **Cloud Detec
 By using this lab, security practitioners can gain practical experience in detecting and responding to threats like containerized cryptominers, vulnerable deployments, and behavioral anomalies (ABIOC) using advanced cloud security tools.
 
 **Target Audience:** Cloud Security Engineers, SOC Analysts, Security Researchers, and anyone interested in hands-on experience with XSIAM and Prisma Cloud for container security.
-## Setup & Scope 
-the CDR attack simulation is **Cloud Agnostic** demonstration of container and kubernetes security. This simulation can be deployed in any derrative of kuberentes including implementations like microk8s, k3s AKS, GKE, EKS, Openshift etc. 
 
+## Setup & Scope 
+the CDR attack simulation is **Cloud Agnostic** demonstration of container and kubernetes security. This simulation can be deployed in any derrative of kuberentes including implementations like microk8s, k3s AKS, GKE, EKS, Openshift etc. The current file CDR.yml will execute different simulations automatically. THe script is built with the native heurisitic and behavioral detections that we're able to use to generate sensor and analysitcs data. Its best practice to run the script for 1hr, and the tear it down. 
 
 ## Features
 
@@ -68,15 +68,16 @@ the CDR attack simulation is **Cloud Agnostic** demonstration of container and k
   
 9. **Observer in XDR**
    * XDR will have created an Incident and should be avial
-
+  
+10. **Teardown**
+    ```bash
+    kubectl delete -f cdr.yml
+    ```
 ## Lab Scenarios & Simulation Details
 
-The core of this lab involves executing a script within a container (based on Alpine/BusyBox) that simulates a multi-stage attack. The script performs actions designed to trigger detections in Prisma Cloud and XSIAM.
-
-*(You can keep the detailed breakdown from your original README here, perhaps refining the formatting slightly)*
+The core of the detection scenario is premised within a cloud native/container orchestrated enviorment. When appying the deployment file the orchestrated cluster will automatically call all of the required scripts to provide agent and analytics detections. 
 
 ---
-
 ### **Simulation Script Breakdown:**
 
 #### **1. Initial Setup**
@@ -133,12 +134,7 @@ This simulation should trigger detections based on:
 
 ## Contributing
 
-*(Optional: Add guidelines here if you welcome contributions. e.g., "Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.")*
-
-## License
-
-*(Optional: Specify the license for your project. If you added the badge, make sure it matches.)*
-* Example: This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.*
+* Please create forks, create issues or issue pull requrests to contribute. This repository is maintained by the DC community or myself and has no long term maintain er
 
 ## References
 
