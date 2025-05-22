@@ -54,25 +54,27 @@ the CDR attack simulation is **Cloud Agnostic** demonstration of container and k
         ```bash
         kubectl exec -it <your-pod-name> -- /bin/sh # Or /bin/bash if available
         ```
-7.  ** Manually Executing the Simulation Script:**
-    * Navigate to the script location within the container (if applicable).
-    * Execute the simulation script, the default entrypoint within the container will pull and create the virush.sh, there are additional script runners that are called by the kubernetes manifest that will created detection scenarios 
-        ```bash
-        ./virus.sh; ./loader.sh; 
-        ```
-    * *(Add specific script name and execution details here)*
 
-8.  **Observe in XSIAM/Prisma Cloud:**
+7.  **Observe in XSIAM/Prisma Cloud:**
     * Monitor Prisma Cloud Compute (Incidents > Runtime Events / Monitor > Runtime > Container Observations) for policy violations and alerts.
     * Monitor Cortex XSIAM for incoming alerts, incidents, and related telemetry from Prisma Cloud. Analyze the events using XSIAM's investigation tools.
+    * * Ensure all TTPs are collected by selecting incident insights 
   
-9. **Observer in XDR**
-   * XDR will have created an Incident and should be avial
+8. **Observer in XDR**
+   * XDR will have created an Incident and should be avialbe in the Incident view
+   * Ensure all TTPs are collected by selecting incident insights
+
+9. **Observe in Prisma Cloud**
+   * Prisma Cloud Runtime Protection > Monitor > Runtime Incidents
+   * You will see that there are like-kind incidents that are being generated from the Cloud Security Agents
+   * Confirm Unified Agent connectivity within Prims Cloud by going to Defenders > Manage Defenders. A new "Cloud Security Agent" tab should be available that will list the unified agent deployemnts 
   
-10. **Teardown**
+11. **Teardown**
     ```bash
     kubectl delete -f cdr.yml
     ```
+    this will delete all of the pods and related content, this can be validated by ensuring all of the daemonset, alpine-cdr-1, and persistant job are delted
+    
 ## Lab Scenarios & Simulation Details
 
 The core of the detection scenario is premised within a cloud native/container orchestrated enviorment. When appying the deployment file the orchestrated cluster will automatically call all of the required scripts to provide agent and analytics detections. 
